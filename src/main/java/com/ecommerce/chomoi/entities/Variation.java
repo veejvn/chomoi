@@ -14,6 +14,8 @@ import java.util.Set;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @Entity
 public class Variation {
+
+    @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     @Column(name = "var_id")
     String id;

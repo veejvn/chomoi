@@ -10,6 +10,9 @@ import lombok.experimental.FieldDefaults;
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @Entity
+//The word option is a reserved keyword in SQL,
+// and so when the database tries to create a table with that name, it leads to a syntax error.
+@Table(name = "options")
 public class Option {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
