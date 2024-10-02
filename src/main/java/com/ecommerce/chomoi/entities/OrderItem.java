@@ -10,16 +10,16 @@ import lombok.experimental.FieldDefaults;
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @Entity
-public class Option {
-    @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
-    @Column(name = "opt_id")
-    String id;
+public class OrderItem {
 
-    @Column(name = "opt_value", nullable = false)
-    String value;
+    @Column(name = "ord_itm_quantity")
+    String quantity;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "att_id")
-    Attribute attribute;
+    @JoinColumn(name = "ord_id")
+    Order order;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "sku_id")
+    SKU sku;
 }

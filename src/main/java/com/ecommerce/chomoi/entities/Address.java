@@ -13,31 +13,34 @@ import lombok.experimental.FieldDefaults;
 public class Address {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    @Column(name = "address_id")
+    @Column(name = "adr_id")
     String id;
 
-    @Column(name = "address_province")
+    @Column(name = "adr_province", nullable = false)
     String province;
 
-    @Column(name = "address_district")
+    @Column(name = "adr_district", nullable = false)
     String district;
 
-    @Column(name = "address_ward")
+    @Column(name = "adr_ward", nullable = false)
     String ward;
 
-    @Column(name = "address_detail")
+    @Column(name = "adr_detail", nullable = false)
     String detail;
 
-    @Column(name = "address_receiver_name")
+    @Column(name = "adr_receiver_name", nullable = false)
     String receiver_name;
 
-    @Column(name = "address_receiver_phone")
+    @Column(name = "adr_receiver_phone", nullable = false)
     String receiver_phone;
 
+    @OneToOne(mappedBy = "address")
+    Shop shop;
+
+    @OneToOne(mappedBy = "address")
+    Order order;
+
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "account_id")
+    @JoinColumn(name = "acc_id")
     Account account;
-
-
-
 }

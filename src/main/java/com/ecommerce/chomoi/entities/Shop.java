@@ -18,19 +18,19 @@ import java.util.Set;
 public class Shop {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    @Column(name = "shop_id")
+    @Column(name = "shp_id")
     String id;
 
-    @Column(name = "shop_name")
+    @Column(name = "shp_name", nullable = false)
     String name;
 
-    @Column(name = "shop_avatar")
+    @Column(name = "shp_avatar")
     String avatar;
 
-    @Column(name = "shop_cover_image")
+    @Column(name = "shp_cover_image")
     String cover_image;
 
-    @Column(name = "shop_rating")
+    @Column(name = "shp_rating")
     Double rating;
 
     //relationship
@@ -38,17 +38,24 @@ public class Shop {
     //Use Enum Status to make relationship between Shop and Status
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private ShopStatus status;
+    ShopStatus status;
+
+    @OneToOne(mappedBy = "shop")
+    Account account;
+
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "adr_id")
+    Address address;
+
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "shop", orphanRemoval = true)
+    Set<Product> products = new HashSet<>();
+
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "shop", orphanRemoval = true)
+    Set<Order> orders = new HashSet<>();
 
     @PrePersist
-    protected void onCreate() {
+    void onCreate() {
         this.status = ShopStatus.ACTIVE;
     }
-
-    @MapsId
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "account_id")
-    private Account account;
-
 
 }

@@ -21,7 +21,7 @@ public class Account {
     @Column(name = "acc_id")
     String id;
 
-    @Column(name = "acc_email")
+    @Column(name = "acc_email", nullable = false)
     String email;
 
     @Column(name = "acc_password")
@@ -45,7 +45,7 @@ public class Account {
     @Column(name = "acc_provider_id")
     String providerId;
 
-    @Column(name = "acc_is_local")
+    @Column(name = "acc_is_local", nullable = false)
     boolean isLocal;
 
     //relationship
@@ -59,13 +59,18 @@ public class Account {
 
     //Account - Shop
 
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "shp_id")
+    Shop shop;
+
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "crt_id")
+    Cart cart;
+
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "account", orphanRemoval = true)
     Set<Address> addresses = new HashSet<>();
 
-    //Bidirectional method
-    void addAddress(Address address){
-        this.addresses.add(address);
-        address.setAccount(this);
-    }
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "account", orphanRemoval = true)
+    Set<Order> orders = new HashSet<>();
 
 }

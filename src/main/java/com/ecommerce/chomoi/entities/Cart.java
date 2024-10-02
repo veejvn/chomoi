@@ -4,22 +4,24 @@ import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
+import java.util.HashSet;
+import java.util.Set;
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @Entity
-public class Option {
+public class Cart {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    @Column(name = "opt_id")
+    @Column(name = "crt_id")
     String id;
 
-    @Column(name = "opt_value", nullable = false)
-    String value;
+    @OneToOne(mappedBy = "cart")
+    Account account;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "att_id")
-    Attribute attribute;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "cart", orphanRemoval = true)
+    Set<CartItem> cartItems = new HashSet<>();
 }

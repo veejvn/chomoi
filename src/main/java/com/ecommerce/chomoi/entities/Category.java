@@ -4,6 +4,9 @@ import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
+import java.util.HashSet;
+import java.util.Set;
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -16,21 +19,24 @@ public class Category {
     @Column(name = "ctg_id")
     String id;
 
-    @Column(name = "ctg_name")
+    @Column(name = "ctg_name", nullable = false)
     String name;
 
     @Column(name = "ctg_parent_id")
     String parent_id;
 
-    @Column(name = "ctg_attribute")
-    String attribute;
-
-    @Column(name = "ctg_left")
+    @Column(name = "ctg_left", nullable = false)
     Integer left;
 
-    @Column(name = "ctg_right")
+    @Column(name = "ctg_right", nullable = false)
     Integer right;
 
-    @Column(name = "ctg_level")
+    @Column(name = "ctg_level", nullable = false)
     Integer level;
+
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "category", orphanRemoval = true)
+    Set<Product> products = new HashSet<>();
+
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "category", orphanRemoval = true)
+    Set<Attribute> attributes = new HashSet<>();
 }

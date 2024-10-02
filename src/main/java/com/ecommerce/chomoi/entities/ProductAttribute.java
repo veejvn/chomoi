@@ -11,6 +11,14 @@ import lombok.experimental.FieldDefaults;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @Entity
 public class ProductAttribute {
-    @Column(name = "value")
+    @Column(name = "value", nullable = false)
     String value;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "prd_id")
+    Product product;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "att_id")
+    Attribute attribute;
 }

@@ -6,6 +6,9 @@ import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
+import java.util.HashSet;
+import java.util.Set;
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -15,34 +18,28 @@ import lombok.experimental.FieldDefaults;
 public class Product {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    @Column(name = "product_id")
+    @Column(name = "prd_id")
     String id;
 
-    @Column(name = "product_name")
+    @Column(name = "prd_name", nullable = false)
     String name;
 
-    @Column(name = "product_description")
+    @Column(name = "prd_description", nullable = false)
     String description;
 
-    @Column(name = "product_price")
-    Double price;
-
-    @Column(name = "product_rating")
+    @Column(name = "prd_rating")
     Double rating;
 
-    @Column(name = "product_inventory")
-    Integer inventory;
-
-    @Column(name = "product_sold")
+    @Column(name = "prd_sold")
     Integer sold;
 
-    @Column(name = "product_thumbnail")
+    @Column(name = "prd_thumbnail")
     String thumbnail;
 
-    @Column(name = "product_video")
+    @Column(name = "prd_video")
     String video;
 
-    @Column(name = "product_slug")
+    @Column(name = "prd_slug", nullable = false)
     String slug;
 
     //relationship
@@ -50,10 +47,33 @@ public class Product {
     //Use Enum Status to make relationship between Product and Status
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private ProductStatus status;
+    ProductStatus status;
+
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "product", orphanRemoval = true)
+    Set<Variation> variations = new HashSet<>();
+
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "product", orphanRemoval = true)
+    Set<Image> images = new HashSet<>();
+
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "product", orphanRemoval = true)
+    Set<SKU> skus = new HashSet<>();
+
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "product", orphanRemoval = true)
+    Set<Review> reviews = new HashSet<>();
+
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "product", orphanRemoval = true)
+    Set<ProductAttribute> productAttributes = new HashSet<>();
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "ctg_id")
+    Category category;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "shp_id")
+    Shop shop;
 
     @PrePersist
-    protected void onCreate() {
+    void onCreate() {
         this.status = ProductStatus.PENDING;
     }
 }
