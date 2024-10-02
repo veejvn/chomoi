@@ -14,6 +14,10 @@ import java.util.Set;
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @Entity
+//The issue arises due to the keyword "order",
+// which is a reserved word in SQL. As a result,
+// using "order" as a table name without proper escaping leads to a syntax error.
+@Table(name = "orders")
 public class Order {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)

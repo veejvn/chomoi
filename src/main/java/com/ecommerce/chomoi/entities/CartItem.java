@@ -11,14 +11,20 @@ import lombok.experimental.FieldDefaults;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @Entity
 public class CartItem {
+
+    @EmbeddedId
+    CartItemId id;
+
     @Column(name = "crt_itm_quantity")
     String quantity;
 
     @ManyToOne(fetch = FetchType.LAZY)
+    @MapsId("cartId")
     @JoinColumn(name = "crt_id")
     Cart cart;
 
     @ManyToOne(fetch = FetchType.LAZY)
+    @MapsId("skuId")
     @JoinColumn(name = "sku_id")
     SKU sku;
 }
