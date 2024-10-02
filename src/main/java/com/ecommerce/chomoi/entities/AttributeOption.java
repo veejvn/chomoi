@@ -10,16 +10,16 @@ import lombok.experimental.FieldDefaults;
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @Entity
-public class OptionVariation {
+public class AttributeOption {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    @Column(name = "opt_var_id")
+    @Column(name = "att_opt_id")
     String id;
 
-    @Column(name = "opt_var_value")
-    String optionValue;
+    @Column(name = "att_opt_value", nullable = false)
+    String value;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "var_id")
-    Variation variation;
+    @JoinColumn(name = "att_id")
+    Attribute attribute;
 }

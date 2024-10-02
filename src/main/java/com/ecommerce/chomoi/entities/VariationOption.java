@@ -10,19 +10,16 @@ import lombok.experimental.FieldDefaults;
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @Entity
-//The word option is a reserved keyword in SQL,
-// and so when the database tries to create a table with that name, it leads to a syntax error.
-@Table(name = "options")
-public class Option {
+public class VariationOption {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    @Column(name = "opt_id")
+    @Column(name = "var_opt_id")
     String id;
 
-    @Column(name = "opt_value", nullable = false)
-    String value;
+    @Column(name = "var_opt_value")
+    String optionValue;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "att_id")
-    Attribute attribute;
+    @JoinColumn(name = "var_id")
+    Variation variation;
 }

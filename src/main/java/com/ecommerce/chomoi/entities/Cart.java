@@ -19,9 +19,10 @@ public class Cart {
     @Column(name = "crt_id")
     String id;
 
-    @OneToOne(mappedBy = "cart")
+    @OneToOne
+    @JoinColumn(name = "acc_id")
     Account account;
 
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "cart", orphanRemoval = true)
+    @OneToMany(cascade = CascadeType.ALL,mappedBy = "cart", orphanRemoval = true)
     Set<CartItem> cartItems = new HashSet<>();
 }

@@ -57,20 +57,15 @@ public class Account {
     @Column(name = "role_name")
     Set<Role> roles = new HashSet<>();
 
-    //Account - Shop
-
-    @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "shp_id")
+    @OneToOne(mappedBy = "account", cascade = CascadeType.ALL)
     Shop shop;
 
-    @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "crt_id")
+    @OneToOne(mappedBy = "account", cascade = CascadeType.ALL)
     Cart cart;
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "account", orphanRemoval = true)
     Set<Address> addresses = new HashSet<>();
 
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "account", orphanRemoval = true)
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "buyer", orphanRemoval = true)
     Set<Order> orders = new HashSet<>();
-
 }

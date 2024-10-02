@@ -33,7 +33,7 @@ public class Product {
     @Column(name = "prd_sold")
     Integer sold;
 
-    @Column(name = "prd_thumbnail")
+    @Column(name = "prd_thumbnail", nullable = false)
     String thumbnail;
 
     @Column(name = "prd_video")
@@ -42,9 +42,6 @@ public class Product {
     @Column(name = "prd_slug", nullable = false)
     String slug;
 
-    //relationship
-
-    //Use Enum Status to make relationship between Product and Status
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     ProductStatus status;
@@ -52,7 +49,7 @@ public class Product {
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "product", orphanRemoval = true)
     Set<Variation> variations = new HashSet<>();
 
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "product", orphanRemoval = true)
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "product",orphanRemoval = true)
     Set<Image> images = new HashSet<>();
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "product", orphanRemoval = true)
@@ -75,5 +72,7 @@ public class Product {
     @PrePersist
     void onCreate() {
         this.status = ProductStatus.PENDING;
+        this.rating = 0.0;
+        this.sold = 0;
     }
 }

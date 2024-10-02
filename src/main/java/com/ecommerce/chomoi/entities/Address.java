@@ -37,9 +37,6 @@ public class Address {
     @OneToOne(mappedBy = "address")
     Shop shop;
 
-    @OneToOne(mappedBy = "address")
-    Order order;
-
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "acc_id")
     Account account;

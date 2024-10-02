@@ -1,5 +1,6 @@
 package com.ecommerce.chomoi.entities;
 
+import com.ecommerce.chomoi.entities.embeddedIds.ProductAttributeId;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
@@ -15,16 +16,14 @@ public class ProductAttribute {
     @EmbeddedId
     ProductAttributeId id;
 
-    @Column(name = "value", nullable = false)
+    @Column(name = "prd_itm_value", nullable = false)
     String value;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @MapsId("productId")
     @JoinColumn(name = "prd_id")
     Product product;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @MapsId("attributeId")
+    @ManyToOne
     @JoinColumn(name = "att_id")
     Attribute attribute;
 }

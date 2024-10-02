@@ -14,9 +14,6 @@ import java.util.Set;
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @Entity
-//The issue arises due to the keyword "order",
-// which is a reserved word in SQL. As a result,
-// using "order" as a table name without proper escaping leads to a syntax error.
 @Table(name = "orders")
 public class Order {
     @Id
@@ -24,10 +21,10 @@ public class Order {
     @Column(name = "ord_id")
     String id;
 
-    @Column(name = "ord_total_quantity")
+    @Column(name = "ord_total_quantity", nullable = false)
     String totalQuantity;
 
-    @Column(name = "ord_total_price")
+    @Column(name = "ord_total_price", nullable = false)
     String totalPrice;
 
     @Enumerated(EnumType.STRING)
@@ -37,8 +34,8 @@ public class Order {
     @Column(name = "ord_note")
     String note;
 
-    @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "address_id")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "adr_id")
     Address address;
 
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
@@ -48,13 +45,12 @@ public class Order {
     Set<OrderItem> orderItems = new HashSet<>();
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "account_id")
-    Account account;
+    @JoinColumn(name = "byr_id")
+    Account buyer;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "shp_id")
     Shop shop;
-
 
     @PrePersist
     protected void onCreate() {

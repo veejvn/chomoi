@@ -33,24 +33,22 @@ public class Shop {
     @Column(name = "shp_rating")
     Double rating;
 
-    //relationship
-
-    //Use Enum Status to make relationship between Shop and Status
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     ShopStatus status;
 
-    @OneToOne(mappedBy = "shop")
+    @OneToOne
+    @JoinColumn(name = "acc_id")
     Account account;
 
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "adr_id")
     Address address;
 
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "shop", orphanRemoval = true)
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "shop", orphanRemoval = true, fetch = FetchType.LAZY)
     Set<Product> products = new HashSet<>();
 
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "shop", orphanRemoval = true)
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "shop", orphanRemoval = true, fetch = FetchType.LAZY)
     Set<Order> orders = new HashSet<>();
 
     @PrePersist

@@ -1,5 +1,6 @@
 package com.ecommerce.chomoi.entities;
 
+import com.ecommerce.chomoi.entities.embeddedIds.CartItemId;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
@@ -19,12 +20,10 @@ public class CartItem {
     String quantity;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @MapsId("cartId")
     @JoinColumn(name = "crt_id")
     Cart cart;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @MapsId("skuId")
+    @ManyToOne
     @JoinColumn(name = "sku_id")
     SKU sku;
 }

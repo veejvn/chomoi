@@ -23,15 +23,12 @@ public class Attribute {
     String name;
 
     @Column(name = "att_is_enter_by_hand")
-    Boolean isEnterByHand;
-
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "attribute", orphanRemoval = true)
-    Set<ProductAttribute> productAttributes = new HashSet<>();
-
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "attribute", orphanRemoval = true)
-    Set<Option> options = new HashSet<>();
+    Boolean isEnterByHand = false;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "ctg_id")
     Category category;
+
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "attribute",orphanRemoval = true)
+    Set<AttributeOption> options = new HashSet<>();
 }

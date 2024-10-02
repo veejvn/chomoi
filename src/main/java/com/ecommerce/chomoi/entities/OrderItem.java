@@ -1,5 +1,6 @@
 package com.ecommerce.chomoi.entities;
 
+import com.ecommerce.chomoi.entities.embeddedIds.OrderItemId;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;

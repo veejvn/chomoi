@@ -34,8 +34,8 @@ public class Category {
     @Column(name = "ctg_level", nullable = false)
     Integer level;
 
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "category", orphanRemoval = true)
-    Set<Product> products = new HashSet<>();
+    @Column(name = "ctg_is_leaf", nullable = false)
+    Boolean isLeaf = true;
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "category", orphanRemoval = true)
     Set<Attribute> attributes = new HashSet<>();

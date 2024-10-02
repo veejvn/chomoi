@@ -1,4 +1,4 @@
-package com.ecommerce.chomoi.entities;
+package com.ecommerce.chomoi.entities.embeddedIds;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
@@ -14,9 +14,9 @@ import lombok.experimental.FieldDefaults;
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class CartItemId {
-    @Column(name = "ord_id")
+    @Column(name = "crt_itm_crt_id")
     String cartId;
 
-    @Column(name = "sku_id")
+    @Column(name = "crt_itm_sku_id")
     String skuId;
 }

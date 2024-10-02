@@ -23,13 +23,13 @@ public class Variation {
     @Column(name = "var_name", nullable = false)
     String name;
 
-    @Column(name = "var_order")
+    @Column(name = "var_order", nullable = false)
     Integer order;
-
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "variation", orphanRemoval = true)
-    Set<OptionVariation> optionVariations = new HashSet<>();
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "prd_id")
     Product product;
+
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "variation", orphanRemoval = true)
+    Set<VariationOption> optionVariations = new HashSet<>();
 }
