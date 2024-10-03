@@ -20,12 +20,10 @@ public class OrderItem {
     String quantity;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @MapsId("orderId")
     @JoinColumn(name = "ord_id")
     Order order;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @MapsId("skuId")
     @JoinColumn(name = "sku_id")
     SKU sku;
 }
