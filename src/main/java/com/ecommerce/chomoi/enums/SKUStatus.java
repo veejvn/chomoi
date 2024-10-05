@@ -1,7 +1,7 @@
 package com.ecommerce.chomoi.enums;
 
 public enum SKUStatus {
-    ACTIVE, // san pham dang duoc ban
+    ACTIVE,
     PENDING,
-    SOLDOUT
+    SOLD_OUT
 }

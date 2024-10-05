@@ -46,7 +46,7 @@ public class Account {
     String providerId;
 
     @Column(name = "acc_is_local", nullable = false)
-    boolean isLocal;
+    Boolean isLocal;
 
     //relationship
 
@@ -68,4 +68,8 @@ public class Account {
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "buyer", orphanRemoval = true)
     Set<Order> orders = new HashSet<>();
+
+    public boolean getIsLocal(){
+        return this.isLocal;
+    }
 }
