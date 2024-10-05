@@ -22,6 +22,9 @@ public class Review {
     @Column(name = "rvw_comment", nullable = false)
     String comment;
 
+    @Column(name = "rvw_response")
+    String response;
+
     @Column(name = "rvw_image")
     String image;
 
