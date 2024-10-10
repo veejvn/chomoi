@@ -28,11 +28,14 @@ public class Address {
     @Column(name = "adr_detail", nullable = false)
     String detail;
 
+    @Column(name = "adr_is_default", nullable = false)
+    Boolean isDefault;
+
     @Column(name = "adr_receiver_name", nullable = false)
-    String receiver_name;
+    String receiverName;
 
     @Column(name = "adr_receiver_phone", nullable = false)
-    String receiver_phone;
+    String receiverPhone;
 
     @OneToOne(mappedBy = "address")
     Shop shop;

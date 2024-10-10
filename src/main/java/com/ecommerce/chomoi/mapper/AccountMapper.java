@@ -21,5 +21,6 @@ public interface AccountMapper {
         }
         return scopeBuilder.toString().trim();
     }
+
     AuthAccountInfoResponse toAccountInfo(Account account);
 }
