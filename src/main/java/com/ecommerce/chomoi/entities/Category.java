@@ -23,7 +23,7 @@ public class Category {
     String name;
 
     @Column(name = "ctg_parent_id")
-    String parent_id;
+    String parentId;
 
     @Column(name = "ctg_left", nullable = false)
     Integer left;

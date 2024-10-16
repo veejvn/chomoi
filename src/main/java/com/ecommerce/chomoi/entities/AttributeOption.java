@@ -1,5 +1,6 @@
 package com.ecommerce.chomoi.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
@@ -21,5 +22,6 @@ public class AttributeOption {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "att_id")
+    @JsonIgnore
     Attribute attribute;
 }
