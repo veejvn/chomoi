@@ -1,11 +1,14 @@
 package com.ecommerce.chomoi.mapper;
 
+import com.ecommerce.chomoi.dto.account.AccountRequest;
+import com.ecommerce.chomoi.dto.account.AccountResponse;
 import com.ecommerce.chomoi.dto.auth.AuthAccountInfoResponse;
 import com.ecommerce.chomoi.dto.jwt.JWTPayloadDto;
 import com.ecommerce.chomoi.entities.Account;
 import com.ecommerce.chomoi.enums.Role;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
+import org.mapstruct.MappingTarget;
 
 import java.util.Set;
 
@@ -23,4 +26,6 @@ public interface AccountMapper {
     }
 
     AuthAccountInfoResponse toAccountInfo(Account account);
+    AccountResponse toAcountResponse(Account account);
+    void updateAccount(@MappingTarget Account account, AccountRequest request);
 }
