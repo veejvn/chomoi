@@ -139,7 +139,7 @@ public class CategoryService {
         if (!category.getIsLeaf()) {
             throw new AppException(HttpStatus.BAD_REQUEST, "Category is not leaf", "category-e-02");
         }
-        Attribute attribute = attributeService.createDefault(category, request.getName());
+        Attribute attribute = attributeService.createDefault(category, request);
         return attributeMapper.toAttributeResponse(attribute);
     }
 }

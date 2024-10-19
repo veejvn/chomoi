@@ -8,7 +8,7 @@ import lombok.experimental.FieldDefaults;
 
 @Data
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class AttributeAddRequest {
+public class AttributeUpdateRequest {
     @NotBlank(message = "Name is required")
     String name;
     @NotNull(message = "IsEnterByHand is required")

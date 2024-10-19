@@ -1,7 +1,9 @@
 package com.ecommerce.chomoi.service;
 
+import com.ecommerce.chomoi.dto.attribute.AttributeAddRequest;
 import com.ecommerce.chomoi.dto.attribute.AttributeOptionAddRequest;
 import com.ecommerce.chomoi.dto.attribute.AttributeOptionUpdateRequest;
+import com.ecommerce.chomoi.dto.attribute.AttributeUpdateRequest;
 import com.ecommerce.chomoi.dto.caterogy.AttributeResponse;
 import com.ecommerce.chomoi.entities.Attribute;
 import com.ecommerce.chomoi.entities.AttributeOption;
@@ -28,9 +30,8 @@ public class AttributeService {
     AttributeMapper attributeMapper;
     AttributeOptionRepository attributeOptionRepository;
 
-    public Attribute createDefault(Category category, String name) {
-        Attribute attribute = new Attribute();
-        attribute.setName(name);
+    public Attribute createDefault(Category category, AttributeAddRequest request) {
+        Attribute attribute = attributeMapper.toAttribute(request);
         attribute.setCategory(category);
         attributeRepository.save(attribute);
         return attribute;
@@ -47,24 +48,12 @@ public class AttributeService {
         attributeRepository.delete(attribute);
     }
 
-    public AttributeResponse updateAttributeField(String attributeId, String field, String value) {
+    public AttributeResponse update(String attributeId, AttributeUpdateRequest request) {
         Attribute attribute = attributeRepository.findById(attributeId)
                 .orElseThrow(() -> new AppException(HttpStatus.NOT_FOUND, "Attribute not found", "attribute-e-01"));
-        switch (field) {
-            case "name":
-                attribute.setName(value);
-                break;
-            case "isEnterByHand":
-                attribute.setIsEnterByHand(Boolean.parseBoolean(value));
-                break;
-            case "required":
-                attribute.setRequired(Boolean.parseBoolean(value));
-                break;
-            default:
-                throw new AppException(HttpStatus.BAD_REQUEST, "Invalid field name", "attribute-e-02");
-        }
-        Attribute updatedAttribute = attributeRepository.save(attribute);
-        return attributeMapper.toAttributeResponse(updatedAttribute);
+        attributeMapper.updateAttribute(request, attribute);
+        attributeRepository.save(attribute);
+        return attributeMapper.toAttributeResponse(attribute);
     }
 
     public AttributeOption addOptionToAttribute(String attributeId, AttributeOptionAddRequest request) {

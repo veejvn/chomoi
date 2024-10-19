@@ -4,7 +4,7 @@ package com.ecommerce.chomoi.controller;
 import com.ecommerce.chomoi.dto.api.ApiResponse;
 import com.ecommerce.chomoi.dto.attribute.AttributeOptionAddRequest;
 import com.ecommerce.chomoi.dto.attribute.AttributeOptionUpdateRequest;
-import com.ecommerce.chomoi.dto.attribute.AttributeUpdateFieldRequest;
+import com.ecommerce.chomoi.dto.attribute.AttributeUpdateRequest;
 import com.ecommerce.chomoi.dto.caterogy.AttributeResponse;
 import com.ecommerce.chomoi.entities.AttributeOption;
 import com.ecommerce.chomoi.service.AttributeService;
@@ -27,19 +27,19 @@ public class AttributeController {
         attributeService.delete(attributeId);
         ApiResponse<Void> response = ApiResponse.<Void>builder()
                 .message("Attribute deleted successfully")
-                .code("attribute-s-01")
+                .code("attribute-s-02")
                 .build();
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
-    @PatchMapping("/{attributeId}")
-    public ResponseEntity<ApiResponse<AttributeResponse>> updateAttributeField(
+    @PutMapping("/{attributeId}")
+    public ResponseEntity<ApiResponse<AttributeResponse>> update(
             @PathVariable String attributeId,
-            @RequestBody @Valid AttributeUpdateFieldRequest request) {
-        AttributeResponse updatedAttribute = attributeService.updateAttributeField(attributeId, request.getField(), request.getValue());
+            @RequestBody @Valid AttributeUpdateRequest request) {
+        AttributeResponse updatedAttribute = attributeService.update(attributeId, request);
         ApiResponse<AttributeResponse> response = ApiResponse.<AttributeResponse>builder()
                 .message("Attribute field updated successfully")
-                .code("attribute-s-02")
+                .code("attribute-s-03")
                 .data(updatedAttribute)
                 .build();
         return ResponseEntity.ok(response);
@@ -50,13 +50,13 @@ public class AttributeController {
             @PathVariable String attributeId, @RequestBody @Valid AttributeOptionAddRequest request) {
         ApiResponse<AttributeOption> response = ApiResponse.<AttributeOption>builder()
                 .message("Option added successfully")
-                .code("attribute-s-03")
+                .code("attribute-s-04")
                 .data(attributeService.addOptionToAttribute(attributeId, request))
                 .build();
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
-    @PatchMapping("/options/{optionId}")
+    @PutMapping("/options/{optionId}")
     public ResponseEntity<ApiResponse<AttributeOption>> updateAttributeOption(
             @PathVariable String optionId,
             @RequestBody @Valid AttributeOptionUpdateRequest request) {
