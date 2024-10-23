@@ -65,6 +65,9 @@ public class AddressService {
             throw new AppException(HttpStatus.FORBIDDEN, "You are not the creator of this address", "address-e-04");
         }
 
+        if(request.getIsDefault())
+            setDefaultAddressIsFalse(securityUtil.getAccountId());
+
         Address address = addressRepository.findById(id)
                 .orElseThrow(
                         () -> new AppException(HttpStatus.NOT_FOUND,"Update address not found.", "address-e-02")
