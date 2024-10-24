@@ -1,6 +1,7 @@
 package com.ecommerce.chomoi.entities;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
@@ -31,9 +32,10 @@ public class Attribute {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "ctg_id")
-    @JsonIgnore
+    @JsonBackReference
     Category category;
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "attribute", orphanRemoval = true, fetch = FetchType.EAGER)
+    @JsonManagedReference
     List<AttributeOption> options = new ArrayList<>();
 }

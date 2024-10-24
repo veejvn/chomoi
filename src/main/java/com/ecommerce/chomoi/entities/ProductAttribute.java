@@ -1,6 +1,7 @@
 package com.ecommerce.chomoi.entities;
 
 import com.ecommerce.chomoi.entities.embeddedIds.ProductAttributeId;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
@@ -21,6 +22,7 @@ public class ProductAttribute {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "prd_id")
+    @JsonIgnore
     Product product;
 
     @ManyToOne

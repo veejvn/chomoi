@@ -1,5 +1,6 @@
 package com.ecommerce.chomoi.entities;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
@@ -17,9 +18,10 @@ public class VariationOption {
     String id;
 
     @Column(name = "var_opt_value")
-    String optionValue;
+    String value;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "var_id")
+    @JsonBackReference
     Variation variation;
 }

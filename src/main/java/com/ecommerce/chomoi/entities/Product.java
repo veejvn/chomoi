@@ -1,13 +1,14 @@
 package com.ecommerce.chomoi.entities;
 
 import com.ecommerce.chomoi.enums.ProductStatus;
-import com.ecommerce.chomoi.enums.ShopStatus;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Data
 @NoArgsConstructor
@@ -39,40 +40,68 @@ public class Product {
     @Column(name = "prd_video")
     String video;
 
-    @Column(name = "prd_slug", nullable = false)
+    @Column(name = "prd_slug", nullable = true)
     String slug;
 
+    @Column(name = "prd_is_simple", nullable = false)
+    Boolean isSimple = true;
+
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
+    @Column(name = "prd_status", nullable = false)
     ProductStatus status;
 
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "product", orphanRemoval = true)
-    Set<Variation> variations = new HashSet<>();
-
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "product",orphanRemoval = true)
-    Set<Image> images = new HashSet<>();
+    @Column(name = "prd_created_at")
+    LocalDateTime createdAt;
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "product", orphanRemoval = true)
-    Set<SKU> skus = new HashSet<>();
+    @EqualsAndHashCode.Exclude
+    @ToString.Exclude
+    @JsonManagedReference
+    List<Variation> variations = new ArrayList<>();
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "product", orphanRemoval = true)
-    Set<Review> reviews = new HashSet<>();
+    @EqualsAndHashCode.Exclude
+    @ToString.Exclude
+    @JsonManagedReference
+    List<Image> images = new ArrayList<>();
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "product", orphanRemoval = true)
-    Set<ProductAttribute> productAttributes = new HashSet<>();
+    @EqualsAndHashCode.Exclude
+    @ToString.Exclude
+    @JsonManagedReference
+    List<SKU> skus = new ArrayList<>();
+
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "product", orphanRemoval = true)
+    @EqualsAndHashCode.Exclude
+    @ToString.Exclude
+    @JsonManagedReference
+    List<Review> reviews = new ArrayList<>();
+
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "product", orphanRemoval = true)
+    @EqualsAndHashCode.Exclude
+    @ToString.Exclude
+    @JsonManagedReference
+    List<ProductAttribute> productAttributes = new ArrayList<>();
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "ctg_id")
+    @EqualsAndHashCode.Exclude
+    @ToString.Exclude
+    @JsonManagedReference
     Category category;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "shp_id")
+    @EqualsAndHashCode.Exclude
+    @ToString.Exclude
+    @JsonManagedReference
     Shop shop;
+
 
     @PrePersist
     void onCreate() {
-        this.status = ProductStatus.PENDING;
         this.rating = 0.0;
         this.sold = 0;
+        this.createdAt = LocalDateTime.now();
     }
 }

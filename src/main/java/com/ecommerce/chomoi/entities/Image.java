@@ -1,5 +1,6 @@
 package com.ecommerce.chomoi.entities;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
@@ -21,5 +22,6 @@ public class Image {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "prd_id")
+    @JsonBackReference
     Product product;
 }

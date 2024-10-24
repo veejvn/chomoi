@@ -1,14 +1,16 @@
 package com.ecommerce.chomoi.entities;
 
 import com.ecommerce.chomoi.enums.SKUStatus;
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
+import java.math.BigDecimal;
 import java.util.HashSet;
 import java.util.Set;
 
-// Them truong sold
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -22,14 +24,14 @@ public class SKU {
     String id;
 
     @Column(name = "sku_price", nullable = false)
-    String price;
+    BigDecimal price;
 
     @Column(name = "sku_stock", nullable = false)
-    String stock;
+    Integer stock;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private SKUStatus status;
+    SKUStatus status;
 
     @Column(name = "sku_weight", nullable = false)
     String weight;
@@ -37,7 +39,7 @@ public class SKU {
     @Column(name = "sku_is_default", nullable = false)
     Boolean isDefault;
 
-    @Column(name = "sku_slug", nullable = false)
+    @Column(name = "sku_slug", nullable = true)
     String slug;
 
     @Column(name = "sku_variation", nullable = false)
@@ -47,16 +49,20 @@ public class SKU {
     String image;
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "sku", orphanRemoval = true)
+    @JsonIgnore
     Set<Review> reviews = new HashSet<>();
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "sku", orphanRemoval = true)
+    @JsonIgnore
     Set<CartItem> cartItems = new HashSet<>();
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "sku", orphanRemoval = true)
+    @JsonIgnore
     Set<OrderItem> orderItems = new HashSet<>();
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "prd_id")
+    @JsonBackReference
     Product product;
 
     @PrePersist

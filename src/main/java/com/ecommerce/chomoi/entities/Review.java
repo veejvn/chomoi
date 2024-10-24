@@ -1,5 +1,6 @@
 package com.ecommerce.chomoi.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
@@ -33,13 +34,16 @@ public class Review {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "prd_id")
+    @JsonIgnore
     Product product;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "sku_id")
+    @JsonIgnore
     SKU sku;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "odr_id")
+    @JsonIgnore
     Order order;
 }

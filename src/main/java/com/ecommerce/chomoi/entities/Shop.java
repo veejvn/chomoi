@@ -1,7 +1,7 @@
 package com.ecommerce.chomoi.entities;
 
-import com.ecommerce.chomoi.enums.Role;
 import com.ecommerce.chomoi.enums.ShopStatus;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
@@ -37,18 +37,22 @@ public class Shop {
     @Column(nullable = false)
     ShopStatus status;
 
-    @OneToOne
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "acc_id")
+    @JsonIgnore
     Account account;
 
-    @OneToOne(cascade = CascadeType.ALL)
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinColumn(name = "adr_id")
+    @JsonIgnore
     Address address;
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "shop", orphanRemoval = true, fetch = FetchType.LAZY)
+    @JsonIgnore
     Set<Product> products = new HashSet<>();
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "shop", orphanRemoval = true, fetch = FetchType.LAZY)
+    @JsonIgnore
     Set<Order> orders = new HashSet<>();
 
     @PrePersist

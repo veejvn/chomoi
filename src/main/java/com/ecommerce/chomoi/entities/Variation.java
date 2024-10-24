@@ -1,11 +1,13 @@
 package com.ecommerce.chomoi.entities;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 
 @Data
 @NoArgsConstructor
@@ -23,13 +25,16 @@ public class Variation {
     @Column(name = "var_name", nullable = false)
     String name;
 
-    @Column(name = "var_order", nullable = false)
-    Integer order;
-
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "prd_id")
+    @EqualsAndHashCode.Exclude
+    @ToString.Exclude
+    @JsonBackReference
     Product product;
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "variation", orphanRemoval = true)
-    Set<VariationOption> optionVariations = new HashSet<>();
+    @EqualsAndHashCode.Exclude
+    @ToString.Exclude
+    @JsonManagedReference
+    List<VariationOption> options = new ArrayList<>();
 }
