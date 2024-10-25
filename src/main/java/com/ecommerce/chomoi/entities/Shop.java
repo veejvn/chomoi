@@ -9,10 +9,10 @@ import lombok.experimental.FieldDefaults;
 import java.util.HashSet;
 import java.util.Set;
 
-@Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+@Data
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @Entity
 public class Shop {
@@ -28,7 +28,7 @@ public class Shop {
     String avatar;
 
     @Column(name = "shp_cover_image")
-    String cover_image;
+    String coverImage;
 
     @Column(name = "shp_rating")
     Double rating;

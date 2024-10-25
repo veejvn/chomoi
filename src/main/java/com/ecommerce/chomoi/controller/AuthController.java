@@ -2,6 +2,10 @@ package com.ecommerce.chomoi.controller;
 
 import com.ecommerce.chomoi.dto.api.ApiResponse;
 import com.ecommerce.chomoi.dto.auth.*;
+import com.ecommerce.chomoi.dto.shop.ShopResponse;
+import com.ecommerce.chomoi.entities.Account;
+import com.ecommerce.chomoi.entities.Shop;
+import com.ecommerce.chomoi.mapper.ShopMapper;
 import com.ecommerce.chomoi.security.SecurityUtil;
 import com.ecommerce.chomoi.service.AuthService;
 import com.ecommerce.chomoi.service.EmailService;
@@ -21,6 +25,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.view.RedirectView;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import java.util.StringJoiner;
 import java.util.UUID;
 
 @RestController
@@ -155,6 +160,18 @@ public class AuthController {
                 .message("Get user info successfully")
                 .build();
         return ResponseEntity.status(HttpStatus.OK).body(apiResponse);
+    }
+
+    @PostMapping("/upgrade-to-shop")
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<ApiResponse<ShopResponse>> upgradeToShop(@Valid @RequestBody AuthUpgradeToShop upgradeToShopDto) {
+        ShopResponse shop = authService.upgradeShop(upgradeToShopDto);
+        ApiResponse<ShopResponse> response = ApiResponse.<ShopResponse>builder()
+                .code("auth-s-11")
+                .message("Upgrade to shop successfully")
+                .data(shop)
+                .build();
+        return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 }
 
