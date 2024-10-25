@@ -1,9 +1,9 @@
 package com.ecommerce.chomoi.controller;
 
+import com.ecommerce.chomoi.dto.api.ApiResponse;
 import com.ecommerce.chomoi.dto.auth.*;
 import com.ecommerce.chomoi.security.SecurityUtil;
 import com.ecommerce.chomoi.service.AuthService;
-import com.ecommerce.chomoi.dto.api.ApiResponse;
 import com.ecommerce.chomoi.service.EmailService;
 import com.ecommerce.chomoi.util.CodeUtil;
 import com.ecommerce.chomoi.util.CommonUtil;
@@ -29,19 +29,21 @@ import java.util.UUID;
 public class AuthController {
     @Value("${app.clientReceiveTokensPath}")
     private String clientReceiveTokensPath;
+    @Value("${app.codeUtil.timeToLive}")
+    private int timeToLive;
     private final AuthService authService;
     private final EmailService emailService;
     private final CodeUtil<AuthRegisterRequest> codeUtil;
     private final CodeUtil<String> forgotPasswordCodeUtil;
     private final SecurityUtil securityUtil;
 
-
     @PostMapping("/register")
     public ResponseEntity<ApiResponse<Void>> register(@RequestBody @Valid AuthRegisterRequest request) {
         authService.register(request);
         String verificationCode = UUID.randomUUID().toString();
-        codeUtil.save(verificationCode, request, 1);
-        emailService.sendEmailToVerifyRegister(request.getEmail(), verificationCode);
+        codeUtil.save(verificationCode, request, this.timeToLive);
+        String pathEmailTemplateVerifyRegister = "src/main/resources/HTMLTemplates/email_template_verify_register.html";
+        emailService.sendEmailToVerifyRegister(request.getEmail(), verificationCode, pathEmailTemplateVerifyRegister);
         ApiResponse<Void> apiResponse = ApiResponse.<Void>builder()
                 .code("auth-s-01")
                 .message("Request register successfully, check your email")
@@ -51,10 +53,11 @@ public class AuthController {
 
     @GetMapping("/register/verify/{verificationCode}")
     public RedirectView verifyRegister(@PathVariable String verificationCode) {
-        AuthRegisterRequest request =  codeUtil.get(verificationCode);
+        AuthRegisterRequest request = codeUtil.get(verificationCode);
         AuthResponse authResponse = authService.verifyRegister(request);
         codeUtil.remove(verificationCode);
-        emailService.sendEmailToWelcome(request.getEmail());
+        String pathEmailTemplateWelcome = "src/main/resources/HTMLTemplates/email_template_welcome.html";
+        emailService.sendEmailToWelcome(request.getEmail(), pathEmailTemplateWelcome);
         String redirectUrl = UriComponentsBuilder.fromUriString(clientReceiveTokensPath)
                 .queryParam("accessToken", authResponse.getAccessToken())
                 .queryParam("refreshToken", authResponse.getRefreshToken())
@@ -63,9 +66,9 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<ApiResponse<AuthResponse>> login(@RequestBody @Valid AuthLoginRequest request){
+    public ResponseEntity<ApiResponse<AuthResponse>> login(@RequestBody @Valid AuthLoginRequest request) {
         AuthResponse authResponse = authService.login(request);
-        ApiResponse<AuthResponse> apiResponse =  ApiResponse.<AuthResponse>builder()
+        ApiResponse<AuthResponse> apiResponse = ApiResponse.<AuthResponse>builder()
                 .data(authResponse)
                 .code("auth-s-03")
                 .message("Login successfully")
@@ -74,9 +77,9 @@ public class AuthController {
     }
 
     @PostMapping("/refresh-token")
-    public ResponseEntity<ApiResponse<AuthResponse>> refreshToken(@RequestBody @Valid AuthRefreshTokenRequest request){
+    public ResponseEntity<ApiResponse<AuthResponse>> refreshToken(@RequestBody @Valid AuthRefreshTokenRequest request) {
         AuthResponse authResponse = authService.refreshToken(request);
-        ApiResponse<AuthResponse> apiResponse =  ApiResponse.<AuthResponse>builder()
+        ApiResponse<AuthResponse> apiResponse = ApiResponse.<AuthResponse>builder()
                 .data(authResponse)
                 .code("auth-s-04")
                 .message("Refresh new access token successfully")
@@ -85,9 +88,9 @@ public class AuthController {
     }
 
     @PostMapping("/logout")
-    public ResponseEntity<ApiResponse<Void>> logOut(@RequestBody @Valid AuthLogOutRequest request){
+    public ResponseEntity<ApiResponse<Void>> logOut(@RequestBody @Valid AuthLogOutRequest request) {
         authService.logOut(request);
-        ApiResponse<Void> apiResponse =  ApiResponse.<Void>builder()
+        ApiResponse<Void> apiResponse = ApiResponse.<Void>builder()
                 .code("auth-s-05")
                 .message("Log out successfully")
                 .build();
@@ -96,10 +99,10 @@ public class AuthController {
 
     @PreAuthorize("isAuthenticated()")
     @PostMapping("/change-password")
-    public ResponseEntity<ApiResponse<Void>> logOut(@RequestBody @Valid AuthChangePasswordRequest request){
+    public ResponseEntity<ApiResponse<Void>> logOut(@RequestBody @Valid AuthChangePasswordRequest request) {
         String userId = BaseJWTUtil.getPayload(SecurityContextHolder.getContext()).getId();
         authService.changePassword(userId, request);
-        ApiResponse<Void> apiResponse =  ApiResponse.<Void>builder()
+        ApiResponse<Void> apiResponse = ApiResponse.<Void>builder()
                 .code("auth-s-06")
                 .message("Password changed successfully")
                 .build();
@@ -121,8 +124,9 @@ public class AuthController {
         authService.forgotPassword(request);
         String verificationCode = CommonUtil.generateVerificationCode();
         forgotPasswordCodeUtil.save(CommonUtil.getForgotPasswordKey(verificationCode), request.getEmail(), 1);
-        emailService.sendEmailToVerifyForgotPassword(request.getEmail(), verificationCode);
-        ApiResponse<Void> apiResponse =  ApiResponse.<Void>builder()
+        String pathEmailTemplateVerifyForgotPasswordCode = "src/main/resources/HTMLTemplates/email_template_verify_forgot_password_code.html";
+        emailService.sendEmailToVerifyForgotPassword(request.getEmail(), verificationCode, pathEmailTemplateVerifyForgotPasswordCode);
+        ApiResponse<Void> apiResponse = ApiResponse.<Void>builder()
                 .code("auth-s-08")
                 .message("Request to get new password successfully, please check your email")
                 .build();
@@ -132,8 +136,8 @@ public class AuthController {
     @PostMapping("/forgot-password/verify")
     public ResponseEntity<ApiResponse<AuthResponse>> verifyForgotPassword(@RequestBody @Valid AuthVerifyForgotPasswordRequest request) {
         String email = forgotPasswordCodeUtil.get(CommonUtil.getForgotPasswordKey(request.getCode()));
-        AuthResponse authResponse =  authService.verifyForgotPassword(email, request);
-        ApiResponse<AuthResponse> apiResponse =  ApiResponse.<AuthResponse>builder()
+        AuthResponse authResponse = authService.verifyForgotPassword(email, request);
+        ApiResponse<AuthResponse> apiResponse = ApiResponse.<AuthResponse>builder()
                 .data(authResponse)
                 .code("auth-s-09")
                 .message("Verify forgot password successfully")
@@ -145,7 +149,7 @@ public class AuthController {
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<ApiResponse<AuthAccountInfoResponse>> getInfo() {
         String accountId = securityUtil.getAccountId();
-        ApiResponse<AuthAccountInfoResponse> apiResponse =  ApiResponse.<AuthAccountInfoResponse>builder()
+        ApiResponse<AuthAccountInfoResponse> apiResponse = ApiResponse.<AuthAccountInfoResponse>builder()
                 .data(authService.getAccountInfo(accountId))
                 .code("auth-s-10")
                 .message("Get user info successfully")

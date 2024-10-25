@@ -2,6 +2,7 @@ package com.ecommerce.chomoi.service;
 
 import com.ecommerce.chomoi.dto.email.SendEmailDto;
 import com.ecommerce.chomoi.exception.AppException;
+import com.ecommerce.chomoi.util.EmailTemplateUtil;
 import jakarta.mail.MessagingException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -11,6 +12,9 @@ import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import java.util.HashMap;
+import java.util.Map;
+
 @Service
 @RequiredArgsConstructor
 public class EmailService {
@@ -18,6 +22,7 @@ public class EmailService {
     private String systemEmail;
 
     private final JavaMailSender mailSender;
+    private final EmailTemplateUtil emailTemplateUtil;
 
     public void sendEmail(SendEmailDto emailPayload) {
         var message = mailSender.createMimeMessage();
@@ -34,13 +39,17 @@ public class EmailService {
         }
     }
 
-    public void sendEmailToVerifyRegister(String toEmail, String verificationCode) {
+    public void sendEmailToVerifyRegister(String toEmail, String verificationCode, String filePath) {
         String verifyUrl = ServletUriComponentsBuilder
                 .fromCurrentContextPath()
                 .path("/auth/register/verify/{verificationCode}")
                 .buildAndExpand(verificationCode)
                 .toUriString();
-        String emailText = "Please click the link below to verify your email and complete the registration process:\n" + verifyUrl;
+
+        Map<String, String> placeholders = new HashMap<>();
+        placeholders.put("verifyUrl", verifyUrl);
+
+        String emailText = emailTemplateUtil.replaceValueInEmailTemplate(placeholders, filePath);
         SendEmailDto emailPayload = SendEmailDto.builder()
                 .to(toEmail)
                 .subject("Verity email to register")
@@ -49,8 +58,8 @@ public class EmailService {
         sendEmail(emailPayload);
     }
 
-    public void sendEmailToWelcome(String toEmail) {
-        String emailText = "Welcome to Secondhand Market";
+    public void sendEmailToWelcome(String toEmail, String filePath) {
+        String emailText = emailTemplateUtil.emailTemplate(filePath);
         SendEmailDto emailPayload = SendEmailDto.builder()
                 .to(toEmail)
                 .subject("Secondhand Market welcome")
@@ -59,8 +68,10 @@ public class EmailService {
         sendEmail(emailPayload);
     }
 
-    public void sendEmailToVerifyForgotPassword(String toEmail, String verificationCode) {
-        String emailText = "Verify forgot password code:\n" + verificationCode;
+    public void sendEmailToVerifyForgotPassword(String toEmail, String verificationCode, String filePath) {
+        Map<String, String> placeholders = new HashMap<>();
+        placeholders.put("verificationCode", verificationCode);
+        String emailText = emailTemplateUtil.replaceValueInEmailTemplate(placeholders, filePath);
         SendEmailDto emailPayload = SendEmailDto.builder()
                 .to(toEmail)
                 .subject("Verity to create new password")

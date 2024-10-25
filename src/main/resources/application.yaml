@@ -76,5 +76,7 @@ app:
       key: ${CLOUDINARY_API_KEY}
       secret: ${CLOUDINARY_API_SECRET}
     folder: ${CLOUDINARY_FOLDER}
+  codeUtil:
+    timeToLive: 5
 server:
   port: ${PORT}
