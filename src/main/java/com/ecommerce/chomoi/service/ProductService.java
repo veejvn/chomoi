@@ -58,7 +58,10 @@ public class ProductService {
 
         if (Boolean.TRUE.equals(productAddRequest.getIsSimple())) {
             SKU sku = createSimpleProductSKU(productAddRequest, product);
-            product.setSkus(List.of(sku));
+            List<SKU> skus = new ArrayList<>();
+            skus.add(sku);
+            product.setSkus(skus);
+
         } else {
             if (productAddRequest.getVariations() == null || productAddRequest.getVariations().isEmpty()) {
                 throw new AppException(HttpStatus.BAD_REQUEST, "Variations cannot be null or empty for complex products", "product-e-02");

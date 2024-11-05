@@ -3,6 +3,7 @@ package com.ecommerce.chomoi.entities;
 import com.ecommerce.chomoi.enums.ProductStatus;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Size;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
@@ -25,7 +26,8 @@ public class Product {
     @Column(name = "prd_name", nullable = false)
     String name;
 
-    @Column(name = "prd_description", nullable = false)
+    @Column(name = "prd_description", columnDefinition = "TEXT", nullable = false)
+    @Size(min = 1000, max = 10000)
     String description;
 
     @Column(name = "prd_rating")
