@@ -1,10 +1,13 @@
 package com.ecommerce.chomoi.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Data
@@ -24,5 +27,6 @@ public class Cart {
     Account account;
 
     @OneToMany(cascade = CascadeType.ALL,mappedBy = "cart", orphanRemoval = true)
-    Set<CartItem> cartItems = new HashSet<>();
+    @JsonIgnore
+    List<CartItem> cartItems = new ArrayList<>();
 }

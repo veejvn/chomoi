@@ -20,11 +20,11 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/categories")
 @RequiredArgsConstructor
-@PreAuthorize("hasRole('ADMIN')")
 public class CategoryController {
     private final CategoryService categoryService;
 
     @PostMapping
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<ApiResponse<Category>> addCategory(@RequestBody @Valid CategoryAddRequest request) {
         Category category = categoryService.add(request);
         ApiResponse<Category> response = ApiResponse.<Category>builder()
@@ -48,6 +48,7 @@ public class CategoryController {
     }
 
     @PutMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<ApiResponse<Category>> updateCategoryName(
             @PathVariable String id,
             @RequestBody @Valid CategoryUpdateRequest request) {
@@ -61,6 +62,7 @@ public class CategoryController {
     }
 
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<ApiResponse<Void>> deleteCategory(@PathVariable String id) {
         categoryService.delete(id);
         ApiResponse<Void> response = ApiResponse.<Void>builder()
@@ -71,7 +73,7 @@ public class CategoryController {
     }
 
     @GetMapping("/{categoryId}/attributes")
-    @PreAuthorize("hasAnyRole('SHOP', 'ADMIN')")
+    @PreAuthorize("permitAll()")
     public ResponseEntity<ApiResponse<List<AttributeResponse>>> getAttributes(@PathVariable String categoryId) {
         ApiResponse<List<AttributeResponse>> response = ApiResponse.<List<AttributeResponse>>builder()
                 .message("Attribute got successfully")
@@ -82,6 +84,7 @@ public class CategoryController {
     }
 
     @PostMapping("/{categoryId}/attributes")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<ApiResponse<AttributeResponse>> addAttributeToCategory(@PathVariable String categoryId, @RequestBody AttributeAddRequest request) {
         ApiResponse<AttributeResponse> response = ApiResponse.<AttributeResponse>builder()
                 .message("Attribute added successfully")

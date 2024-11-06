@@ -17,7 +17,7 @@ public class CartItem {
     CartItemId id;
 
     @Column(name = "crt_itm_quantity")
-    String quantity;
+    int quantity;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "crt_id")

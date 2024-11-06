@@ -9,6 +9,7 @@ import java.util.Optional;
 @Repository
 public interface AccountRepository extends JpaRepository<Account, String> {
     boolean existsByEmailAndIsLocalTrue(String email);
+
     Optional<Account> findByEmailAndIsLocalTrue(String email);
     Optional<Account> findByIsLocalFalseAndProviderNameAndProviderId(String providerName, String providerId);
 }

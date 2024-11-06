@@ -1,11 +1,9 @@
 package com.ecommerce.chomoi.dto.product;
 
-import com.ecommerce.chomoi.entities.Category;
-import com.ecommerce.chomoi.entities.Image;
-import com.ecommerce.chomoi.entities.SKU;
-import com.ecommerce.chomoi.entities.Variation;
+import com.ecommerce.chomoi.entities.*;
 import com.ecommerce.chomoi.entities.embeddedIds.ProductAttributeId;
 import com.ecommerce.chomoi.enums.ProductStatus;
+import com.ecommerce.chomoi.enums.ShopStatus;
 import lombok.Data;
 
 import java.util.ArrayList;
@@ -28,10 +26,28 @@ public class ProductResponse {
     List<SKU> skus = new ArrayList<>();
     List<ProductAttributeDTO> productAttributes = new ArrayList<>();
     Category category;
+    ShopResponse shop;
 
     @Data
     public static class ProductAttributeDTO {
         ProductAttributeId id;
+        Attribute attribute;
         String value;
     }
+
+    @Data
+    public static class ShopResponse {
+        String id;
+
+        String name;
+
+        String avatar;
+
+        String coverImage;
+
+        Double rating;
+
+        ShopStatus status;
+    }
+
 }

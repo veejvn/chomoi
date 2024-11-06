@@ -15,6 +15,7 @@ import lombok.experimental.FieldDefaults;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -47,11 +48,11 @@ public class CartService {
         });
 
         // Handle cart items and create message based on cart contents
-        Set<CartItemResponse> cartItemResponses = (cart.getCartItems() == null || cart.getCartItems().isEmpty())
-                ? Set.of()  // If cart items are empty, return an empty set
+        List<CartItemResponse> cartItemResponses = (cart.getCartItems() == null || cart.getCartItems().isEmpty())
+                ? List.of()  // If cart items are empty, return an empty list
                 : cart.getCartItems().stream()
                 .map(cartItemMapper::toCartItemResponse)
-                .collect(Collectors.toSet());
+                .collect(Collectors.toList());
 
         // Return the CartResponse
         return CartResponse.builder()
@@ -59,4 +60,6 @@ public class CartService {
                 .cartItems(cartItemResponses)
                 .build();
     }
+
+
 }
