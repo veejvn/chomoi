@@ -3,9 +3,7 @@ package com.ecommerce.chomoi.controller;
 import com.ecommerce.chomoi.dto.api.ApiResponse;
 import com.ecommerce.chomoi.dto.auth.*;
 import com.ecommerce.chomoi.dto.shop.ShopResponse;
-import com.ecommerce.chomoi.entities.Account;
-import com.ecommerce.chomoi.entities.Shop;
-import com.ecommerce.chomoi.mapper.ShopMapper;
+import com.ecommerce.chomoi.enums.Role;
 import com.ecommerce.chomoi.security.SecurityUtil;
 import com.ecommerce.chomoi.service.AuthService;
 import com.ecommerce.chomoi.service.EmailService;
@@ -25,7 +23,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.view.RedirectView;
 import org.springframework.web.util.UriComponentsBuilder;
 
-import java.util.StringJoiner;
+import java.util.Set;
 import java.util.UUID;
 
 @RestController
@@ -172,6 +170,29 @@ public class AuthController {
                 .data(shop)
                 .build();
         return ResponseEntity.status(HttpStatus.OK).body(response);
+    }
+
+    @GetMapping("/roles")
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<ApiResponse<Set<Role>>> getRoles() {
+        Set<Role> roles = securityUtil.getAccount().getRoles();
+        ApiResponse<Set<Role>> apiResponse = ApiResponse.<Set<Role>>builder()
+                .code("auth-s-11")
+                .message("Get roles successfully")
+                .data(roles)
+                .build();
+        return ResponseEntity.status(HttpStatus.OK).body(apiResponse);
+    }
+
+    @GetMapping("/new-tokens")
+    public ResponseEntity<ApiResponse<AuthResponse>> newTokens() {
+        AuthResponse authResponse = authService.newTokens();
+        ApiResponse<AuthResponse> apiResponse = ApiResponse.<AuthResponse>builder()
+                .code("auth-s-12")
+                .message("Get new tokens")
+                .data(authResponse)
+                .build();
+        return ResponseEntity.status(HttpStatus.OK).body(apiResponse);
     }
 }
 

@@ -27,7 +27,7 @@ public class Product {
     String name;
 
     @Column(name = "prd_description", columnDefinition = "TEXT", nullable = false)
-    @Size(min = 1000, max = 10000)
+    @Size(min = 100, max = 10000)
     String description;
 
     @Column(name = "prd_rating")

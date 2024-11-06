@@ -4,15 +4,14 @@ import com.ecommerce.chomoi.dto.auth.*;
 import com.ecommerce.chomoi.dto.jwt.JWTPayloadDto;
 import com.ecommerce.chomoi.dto.shop.ShopResponse;
 import com.ecommerce.chomoi.entities.Account;
-import com.ecommerce.chomoi.enums.Role;
 import com.ecommerce.chomoi.entities.RefreshToken;
 import com.ecommerce.chomoi.entities.Shop;
+import com.ecommerce.chomoi.enums.Role;
 import com.ecommerce.chomoi.enums.ShopStatus;
 import com.ecommerce.chomoi.exception.AppException;
 import com.ecommerce.chomoi.mapper.AccountMapper;
 import com.ecommerce.chomoi.mapper.ShopMapper;
 import com.ecommerce.chomoi.repository.AccountRepository;
-import com.ecommerce.chomoi.repository.ShopRepository;
 import com.ecommerce.chomoi.repository.RefreshTokenRepository;
 import com.ecommerce.chomoi.repository.ShopRepository;
 import com.ecommerce.chomoi.security.SecurityUtil;
@@ -23,13 +22,11 @@ import jakarta.transaction.Transactional;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
-
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
+
 import java.util.HashSet;
-import java.util.Optional;
 import java.util.Set;
 
 @Service
@@ -49,7 +46,7 @@ public class AuthService {
 
     public void register(AuthRegisterRequest request) {
         boolean existedAccount = accountRepository.existsByEmailAndIsLocalTrue(request.getEmail());
-        if(existedAccount){
+        if (existedAccount) {
             throw new AppException(HttpStatus.BAD_REQUEST, "Email has existed", "auth-e-01");
         }
     }
@@ -57,7 +54,7 @@ public class AuthService {
     public AuthResponse verifyRegister(AuthRegisterRequest request) {
         // Find Account if not existed
         boolean existedAccount = accountRepository.existsByEmailAndIsLocalTrue(request.getEmail());
-        if(existedAccount){
+        if (existedAccount) {
             throw new AppException(HttpStatus.BAD_REQUEST, "Email has existed", "auth-e-01");
         }
         // Hash password
@@ -76,45 +73,45 @@ public class AuthService {
         accountRepository.save(account);
 
         // Generate a pair of token
-        String accessTokenString =  accessTokenUtil.generateToken(accountMapper.toJWTPayloadDto(account));
-        String refreshTokenString =  refreshTokenUtil.generateToken(accountMapper.toJWTPayloadDto(account),account);
+        String accessTokenString = accessTokenUtil.generateToken(accountMapper.toJWTPayloadDto(account));
+        String refreshTokenString = refreshTokenUtil.generateToken(accountMapper.toJWTPayloadDto(account), account);
         return AuthResponse.builder()
                 .accessToken(accessTokenString)
                 .refreshToken(refreshTokenString)
                 .build();
     }
 
-    public AuthResponse login(AuthLoginRequest request){
+    public AuthResponse login(AuthLoginRequest request) {
         Account account = accountRepository.findByEmailAndIsLocalTrue(request.getEmail()).orElseThrow(
-                ()-> new AppException(HttpStatus.NOT_FOUND, "Email Account not found", "auth-e-02")
+                () -> new AppException(HttpStatus.NOT_FOUND, "Email Account not found", "auth-e-02")
         );
         if (!account.getRoles().contains(request.getRole())) {
             throw new AppException(HttpStatus.FORBIDDEN, "Insufficient permissions", "auth-e-08");
         }
         boolean isMatchPassword = passwordUtil.checkPassword(request.getPassword(), account.getPassword());
-        if(!isMatchPassword){
+        if (!isMatchPassword) {
             throw new AppException(HttpStatus.BAD_REQUEST, "Wrong password", "auth-e-03");
         }
-        String accessTokenString =  accessTokenUtil.generateToken(accountMapper.toJWTPayloadDto(account));
-        String refreshTokenString =  refreshTokenUtil.generateToken(accountMapper.toJWTPayloadDto(account),account);
+        String accessTokenString = accessTokenUtil.generateToken(accountMapper.toJWTPayloadDto(account));
+        String refreshTokenString = refreshTokenUtil.generateToken(accountMapper.toJWTPayloadDto(account), account);
         return AuthResponse.builder()
                 .accessToken(accessTokenString)
                 .refreshToken(refreshTokenString)
                 .build();
     }
 
-    public AuthResponse refreshToken(AuthRefreshTokenRequest request){
+    public AuthResponse refreshToken(AuthRefreshTokenRequest request) {
         String refreshTokenString = request.getRefreshToken();
         JWTPayloadDto payload = refreshTokenUtil.verifyToken(refreshTokenString);
-        String accessTokenString =  accessTokenUtil.generateToken(payload);
+        String accessTokenString = accessTokenUtil.generateToken(payload);
         return AuthResponse.builder()
                 .accessToken(accessTokenString)
                 .build();
     }
 
-    public void logOut(AuthLogOutRequest request){
+    public void logOut(AuthLogOutRequest request) {
         JWTPayloadDto payload = refreshTokenUtil.verifyToken(request.getRefreshToken());
-        RefreshToken refreshToken =  refreshTokenRepository
+        RefreshToken refreshToken = refreshTokenRepository
                 .findByAccountId(payload.getId())
                 .orElseThrow(
                         () -> new AppException(HttpStatus.NOT_FOUND, "Refresh token not found", "auth-e-04")
@@ -123,17 +120,17 @@ public class AuthService {
         refreshTokenRepository.save(refreshToken);
     }
 
-    public void changePassword(String AccountId, AuthChangePasswordRequest request){
+    public void changePassword(String AccountId, AuthChangePasswordRequest request) {
         Account Account = accountRepository
                 .findById(AccountId)
                 .orElseThrow(
                         () -> new AppException(HttpStatus.NOT_FOUND, "Account not found", "auth-e-05")
                 );
-        if(!Account.getIsLocal()){
+        if (!Account.getIsLocal()) {
             throw new AppException(HttpStatus.BAD_REQUEST, "Account is not internal", "auth-e-06");
         }
         boolean isMatchPassword = passwordUtil.checkPassword(request.getCurrentPassword(), Account.getPassword());
-        if(!isMatchPassword){
+        if (!isMatchPassword) {
             throw new AppException(HttpStatus.BAD_REQUEST, "Wrong current password", "auth-e-07");
         }
         String hashedNewPassword = passwordUtil.encodePassword(request.getNewPassword());
@@ -141,7 +138,7 @@ public class AuthService {
         accountRepository.save(Account);
     }
 
-    public AuthResponse loginOAuth2Success(OAuth2User oAuth2Account){
+    public AuthResponse loginOAuth2Success(OAuth2User oAuth2Account) {
         String accountOAuthId = oAuth2Account.getAttribute("sub");
         String providerName = oAuth2Account.getAttribute("provider");
         Account account = accountRepository.findByIsLocalFalseAndProviderNameAndProviderId(providerName, accountOAuthId)
@@ -170,21 +167,21 @@ public class AuthService {
                 .build();
     }
 
-    public void forgotPassword(AuthForgotPasswordRequest request){
+    public void forgotPassword(AuthForgotPasswordRequest request) {
         accountRepository.findByEmailAndIsLocalTrue(request.getEmail()).orElseThrow(
-                ()-> new AppException(HttpStatus.NOT_FOUND, "Email account not found", "auth-e-02")
+                () -> new AppException(HttpStatus.NOT_FOUND, "Email account not found", "auth-e-02")
         );
     }
 
-    public AuthResponse verifyForgotPassword(String email, AuthVerifyForgotPasswordRequest request){
+    public AuthResponse verifyForgotPassword(String email, AuthVerifyForgotPasswordRequest request) {
         Account Account = accountRepository.findByEmailAndIsLocalTrue(email).orElseThrow(
-                ()-> new AppException(HttpStatus.NOT_FOUND, "Email account not found", "auth-e-02")
+                () -> new AppException(HttpStatus.NOT_FOUND, "Email account not found", "auth-e-02")
         );
         String hashedPassword = passwordUtil.encodePassword(request.getNewPassword());
         Account.setPassword(hashedPassword);
         accountRepository.save(Account);
-        String accessTokenString =  accessTokenUtil.generateToken(accountMapper.toJWTPayloadDto(Account));
-        String refreshTokenString =  refreshTokenUtil.generateToken(accountMapper.toJWTPayloadDto(Account),Account);
+        String accessTokenString = accessTokenUtil.generateToken(accountMapper.toJWTPayloadDto(Account));
+        String refreshTokenString = refreshTokenUtil.generateToken(accountMapper.toJWTPayloadDto(Account), Account);
         return AuthResponse.builder()
                 .accessToken(accessTokenString)
                 .refreshToken(refreshTokenString)
@@ -203,7 +200,7 @@ public class AuthService {
     @Transactional
     public ShopResponse upgradeShop(AuthUpgradeToShop request) {
         Account account = securityUtil.getAccount();
-        if(account.getRoles().contains(Role.SHOP)){
+        if (account.getRoles().contains(Role.SHOP)) {
             throw new AppException(HttpStatus.CONFLICT, "Account already has role SHOP", "auth-e-06");
         }
         account.getRoles().add(Role.SHOP);
@@ -215,5 +212,15 @@ public class AuthService {
                 .build();
         shopRepository.save(shop);
         return shopMapper.toShopResponse(shop);
+    }
+
+    public AuthResponse newTokens() {
+        Account account = securityUtil.getAccount();
+        String accessTokenString = accessTokenUtil.generateToken(accountMapper.toJWTPayloadDto(account));
+        String refreshTokenString = refreshTokenUtil.generateToken(accountMapper.toJWTPayloadDto(account), account);
+        return AuthResponse.builder()
+                .accessToken(accessTokenString)
+                .refreshToken(refreshTokenString)
+                .build();
     }
 }
