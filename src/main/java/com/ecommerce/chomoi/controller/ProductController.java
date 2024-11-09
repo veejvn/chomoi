@@ -173,4 +173,25 @@ public class ProductController {
                 .build();
         return ResponseEntity.status(HttpStatus.OK).body(apiResponse);
     }
+
+    @PreAuthorize("permitAll()")
+    @GetMapping("/{shopId}/shop")
+    public ResponseEntity<ApiResponse<PagedResponse<ProductTagResponse>>> getAllByShopId(
+            @PathVariable String shopId,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size){
+        Page<ProductTagResponse> pagedProducts = productService.getAllByShopId(shopId, page, size);
+        PagedResponse<ProductTagResponse> pagedResponseProducts = PagedResponse.<ProductTagResponse>builder()
+                .totalPages(pagedProducts.getTotalPages())
+                .page(pagedProducts.getNumber())
+                .totalElements(pagedProducts.getTotalElements())
+                .content(pagedProducts.getContent())
+                .build();
+        ApiResponse<PagedResponse<ProductTagResponse>> apiResponse = ApiResponse.<PagedResponse<ProductTagResponse>>builder()
+                .code("product-s-11")
+                .message("Get home products successfully")
+                .data(pagedResponseProducts)
+                .build();
+        return ResponseEntity.status(HttpStatus.OK).body(apiResponse);
+    }
 }

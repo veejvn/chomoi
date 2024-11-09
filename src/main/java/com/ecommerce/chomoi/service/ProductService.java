@@ -328,6 +328,13 @@ public class ProductService {
         return productMapper.toProductResponse(product);
     }
 
+    public Page<ProductTagResponse> getAllByShopId(String idShop, int page, int size){
+        Pageable pageable = PageRequest.of(page, size, Sort.by("rating").descending());
+        Page<Product> productPage = productRepository.findByShopId(idShop, pageable);
+        return productMapper.toPageProductTagResponse(productPage);
+
+    }
+
     public Page<ProductTagResponse> adminGetDashboard(int page, int size, String statusRequest) {
         ProductStatus productStatus = ProductStatus.PENDING;
         try {

@@ -38,4 +38,7 @@ public interface ProductRepository extends JpaRepository<Product, String> {
             "OR LOWER(p.description) LIKE LOWER(CONCAT('%', :query, '%')))")
     Page<Product> search(@Param("query") String query,
                          Pageable pageable);
+
+    @Query("SELECT p FROM Product p WHERE p.shop.id = :shopId AND p.status = com.ecommerce.chomoi.enums.ProductStatus.ACTIVE")
+    Page<Product> findByShopId(@Param("shopId") String shopId, Pageable pageable);
 }

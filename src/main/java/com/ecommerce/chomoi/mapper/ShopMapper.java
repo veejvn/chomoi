@@ -10,5 +10,6 @@ import org.mapstruct.MappingTarget;
 @Mapper(componentModel = "spring")
 public interface ShopMapper {
     ShopResponse toShopResponse(Shop shop);
+
 }
 

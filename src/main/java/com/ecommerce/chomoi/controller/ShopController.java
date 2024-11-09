@@ -55,6 +55,7 @@ public class ShopController {
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
+
     @PreAuthorize("hasRole('SHOP')")
     @GetMapping("/owner")
     public ResponseEntity<ApiResponse<ShopResponse>> getShopByOwner(){
@@ -74,6 +75,20 @@ public class ShopController {
         ApiResponse<ShopResponse> response = ApiResponse.<ShopResponse>builder()
                 .code("shop-s-03")
                 .message("Update shop info successfully")
+                .data(shop)
+                .build();
+        return ResponseEntity.status(HttpStatus.OK).body(response);
+    }
+
+
+    //Get Shop from user
+    @PreAuthorize("permitAll()")
+    @GetMapping("/{shopId}/details")
+    public ResponseEntity<ApiResponse<ShopResponse>> getShopById(@PathVariable String shopId) {
+        ShopResponse shop = shopService.getShopById(shopId);
+        ApiResponse<ShopResponse> response = ApiResponse.<ShopResponse>builder()
+                .code("shop-s-01")
+                .message("Get shop successfully")
                 .data(shop)
                 .build();
         return ResponseEntity.status(HttpStatus.OK).body(response);
