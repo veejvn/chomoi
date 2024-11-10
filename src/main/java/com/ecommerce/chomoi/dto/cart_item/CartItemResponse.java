@@ -1,16 +1,13 @@
 package com.ecommerce.chomoi.dto.cart_item;
 
-import com.ecommerce.chomoi.dto.product.ProductResponse;
-import com.ecommerce.chomoi.dto.product.ProductTagResponse;
 import com.ecommerce.chomoi.dto.shop.ShopResponse;
-import com.ecommerce.chomoi.entities.*;
-import com.ecommerce.chomoi.enums.ProductStatus;
-import com.ecommerce.chomoi.enums.ShopStatus;
+import com.ecommerce.chomoi.entities.SKU;
+import com.ecommerce.chomoi.entities.Variation;
+import com.ecommerce.chomoi.entities.embeddedIds.CartItemId;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.List;
 
 @Data
@@ -19,6 +16,7 @@ import java.util.List;
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class CartItemResponse {
+    CartItemId cartItemId;
     String skuId;             // SKU ID from CartItem
     String productSlug;       // Slug of the product
     int quantity;          // Quantity of the CartItem

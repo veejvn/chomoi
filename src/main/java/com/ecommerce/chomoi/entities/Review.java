@@ -1,5 +1,6 @@
 package com.ecommerce.chomoi.entities;
 
+import com.ecommerce.chomoi.enums.ReviewStatus;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
@@ -17,10 +18,10 @@ public class Review {
     @Column(name = "rvw_id")
     String id;
 
-    @Column(name = "rvw_rating", nullable = false)
+    @Column(name = "rvw_rating")
     String rating;
 
-    @Column(name = "rvw_comment", nullable = false)
+    @Column(name = "rvw_comment")
     String comment;
 
     @Column(name = "rvw_response")
@@ -31,6 +32,10 @@ public class Review {
 
     @Column(name = "rvw_video")
     String video;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    ReviewStatus status;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "prd_id")
@@ -46,4 +51,9 @@ public class Review {
     @JoinColumn(name = "odr_id")
     @JsonIgnore
     Order order;
+
+    @PrePersist
+    protected void onCreate() {
+        this.status = ReviewStatus.PENDING;
+    }
 }

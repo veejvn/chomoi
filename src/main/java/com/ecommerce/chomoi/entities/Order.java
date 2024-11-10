@@ -1,12 +1,16 @@
 package com.ecommerce.chomoi.entities;
 
 import com.ecommerce.chomoi.enums.OrderStatus;
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
 
 @Data
 @NoArgsConstructor
@@ -22,34 +26,41 @@ public class Order {
     String id;
 
     @Column(name = "ord_total_quantity", nullable = false)
-    String totalQuantity;
+    int totalQuantity;
 
     @Column(name = "ord_total_price", nullable = false)
-    String totalPrice;
+    BigDecimal totalPrice;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private OrderStatus status;
+    OrderStatus status;
 
-    @Column(name = "ord_note")
+    @Column(name = "ord_note", columnDefinition = "TEXT")
     String note;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "adr_id")
+    @JsonBackReference
     Address address;
 
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
-    Set<Review> reviews = new HashSet<>();
+    @JsonIgnore
+    List<Review> reviews = new ArrayList<>();
 
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
-    Set<OrderItem> orderItems = new HashSet<>();
+    @JsonManagedReference
+    List<OrderItem> orderItems = new ArrayList<>();
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "byr_id")
+    @JsonBackReference
     Account buyer;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "shp_id")
+    @EqualsAndHashCode.Exclude
+    @ToString.Exclude
+    @JsonBackReference
     Shop shop;
 
     @PrePersist

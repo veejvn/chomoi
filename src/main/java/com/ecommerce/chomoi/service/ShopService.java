@@ -1,23 +1,22 @@
 package com.ecommerce.chomoi.service;
 
-import java.util.Optional;
-
+import java.util.List;
+import com.ecommerce.chomoi.dto.order.OrderResponse;
+import com.ecommerce.chomoi.dto.order.OrderStatusRequest;
 import com.ecommerce.chomoi.dto.shop.ShopResponse;
 import com.ecommerce.chomoi.dto.shop.ShopUpdateRequest;
-import com.ecommerce.chomoi.entities.Address;
+import com.ecommerce.chomoi.entities.Order;
+import com.ecommerce.chomoi.enums.OrderStatus;
 import com.ecommerce.chomoi.exception.AppException;
+import com.ecommerce.chomoi.mapper.OrderMapper;
 import com.ecommerce.chomoi.mapper.ShopMapper;
 import com.ecommerce.chomoi.repository.AddressRepository;
+import com.ecommerce.chomoi.repository.OrderRepository;
 import com.ecommerce.chomoi.security.SecurityUtil;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-
-import com.ecommerce.chomoi.dto.auth.AuthUpgradeToShop;
-import com.ecommerce.chomoi.entities.Account;
 import com.ecommerce.chomoi.entities.Shop;
-import com.ecommerce.chomoi.repository.AccountRepository;
 import com.ecommerce.chomoi.repository.ShopRepository;
 
 @Service
@@ -26,7 +25,8 @@ public class ShopService {
     private final ShopRepository shopRepository;
     private final SecurityUtil securityUtil;
     private final ShopMapper shopMapper;
-    private final AddressRepository addressRepository;
+    private final OrderRepository orderRepository;
+    private final OrderMapper orderMapper;
 
     public ShopResponse getShopById(String shopId) {
         Shop shop = shopRepository.findById(shopId)

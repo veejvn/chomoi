@@ -12,6 +12,8 @@ public interface CartItemMapper {
 
     CartItemResponse.ProductResponse toProductResponse(Product product);
 
+    @Mapping(target = "cartItemId.cartId", source = "id.cartId")
+    @Mapping(target = "cartItemId.skuId", source = "id.skuId")
     @Mapping(target = "skuId", source = "id.skuId")
     @Mapping(target = "productSlug", source = "sku.product.slug")
     @Mapping(target = "quantity", source = "quantity")
@@ -21,5 +23,6 @@ public interface CartItemMapper {
     @Mapping(target = "product", source = "sku.product")
     @Mapping(target = "shop", source = "sku.product.shop")
     CartItemResponse toCartItemResponse(CartItem cartItem);
-    CartItem toCartItem (CartItemRequest request);
+
+    CartItem toCartItem(CartItemRequest request);
 }

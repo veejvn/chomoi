@@ -1,6 +1,9 @@
 package com.ecommerce.chomoi.entities;
 
 import com.ecommerce.chomoi.enums.Role;
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
@@ -25,6 +28,7 @@ public class Account {
     String email;
 
     @Column(name = "acc_password")
+    @JsonIgnore
     String password;
 
     @Column(name = "acc_display_name")
@@ -40,12 +44,15 @@ public class Account {
     String phoneNumber;
 
     @Column(name = "acc_provider_name")
+    @JsonIgnore
     String providerName;
 
     @Column(name = "acc_provider_id")
+    @JsonIgnore
     String providerId;
 
     @Column(name = "acc_is_local", nullable = false)
+    @JsonIgnore
     Boolean isLocal;
 
     //relationship
@@ -55,18 +62,23 @@ public class Account {
     @Enumerated(EnumType.STRING)
     @CollectionTable(name = "account_roles", joinColumns = @JoinColumn(name = "acc_id"))
     @Column(name = "role_name")
+    @JsonIgnore
     Set<Role> roles = new HashSet<>();
 
     @OneToOne(mappedBy = "account", cascade = CascadeType.ALL)
+    @JsonIgnore
     Shop shop;
 
     @OneToOne(mappedBy = "account", cascade = CascadeType.ALL)
+    @JsonIgnore
     Cart cart;
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "account", orphanRemoval = true)
+    @JsonIgnore
     Set<Address> addresses = new HashSet<>();
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "buyer", orphanRemoval = true)
+    @JsonIgnore
     Set<Order> orders = new HashSet<>();
 
     public boolean getIsLocal(){
