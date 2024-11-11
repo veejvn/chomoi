@@ -1,6 +1,8 @@
 package com.ecommerce.chomoi.service;
 
 import com.ecommerce.chomoi.dto.email.SendEmailDto;
+import com.ecommerce.chomoi.entities.Order;
+import com.ecommerce.chomoi.entities.Product;
 import com.ecommerce.chomoi.exception.AppException;
 import com.ecommerce.chomoi.util.EmailTemplateUtil;
 import jakarta.mail.MessagingException;
@@ -75,6 +77,35 @@ public class EmailService {
         SendEmailDto emailPayload = SendEmailDto.builder()
                 .to(toEmail)
                 .subject("Verity to create new password")
+                .text(emailText)
+                .build();
+        sendEmail(emailPayload);
+    }
+
+    public void sendEmailToNotifyProductStatusChange(String toEmail, String filePath, Product product) {
+        Map<String, String> placeholders = new HashMap<>();
+        placeholders.put("shopName", product.getShop().getName());
+        placeholders.put("productName", product.getName());
+        placeholders.put("productStatus", product.getStatus().name());
+        String emailText = emailTemplateUtil.replaceValueInEmailTemplate(placeholders, filePath);
+        SendEmailDto emailPayload = SendEmailDto.builder()
+                .to(toEmail)
+                .subject("Cập nhật trạng thái sản phẩm")
+                .text(emailText)
+                .build();
+        sendEmail(emailPayload);
+    }
+
+    public void sendEmailToNotifyOrderStatusChange(String toEmail, String filePath, Order order) {
+        Map<String, String> placeholders = new HashMap<>();
+        placeholders.put("orderId", order.getId());
+        placeholders.put("shopName", order.getShop().getName());
+        placeholders.put("buyerName", order.getBuyer().getDisplayName());
+        placeholders.put("orderStatus", order.getStatus().name());
+        String emailText = emailTemplateUtil.replaceValueInEmailTemplate(placeholders, filePath);
+        SendEmailDto emailPayload = SendEmailDto.builder()
+                .to(toEmail)
+                .subject("Cập nhật trạng đơn hàng")
                 .text(emailText)
                 .build();
         sendEmail(emailPayload);

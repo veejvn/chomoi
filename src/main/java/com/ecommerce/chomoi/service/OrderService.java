@@ -30,6 +30,7 @@ public class OrderService {
     private final OrderRepository orderRepository;
     private final OrderMapper orderMapper;
     private final CartItemRepository cartItemRepository;
+    private final EmailService emailService;
 
     @Transactional
     public OrderResponse createOrder(OrderRequest request) {
@@ -179,7 +180,9 @@ public class OrderService {
 
         order.setStatus(status);
 
+
         orderRepository.save(order);
+        emailService.sendEmailToNotifyOrderStatusChange(order.getBuyer().getEmail(), "src/main/resources/HTMLTemplates/email_template_notify_to_buyer_about_order_status.html", order);
         return orderMapper.toOrderResponse(order);
     }
 

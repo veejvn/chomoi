@@ -21,6 +21,7 @@ public class ProductController {
 
     private final ProductService productService;
 
+
     @GetMapping("/home")
     @PreAuthorize("permitAll()")
     public ResponseEntity<ApiResponse<PagedResponse<ProductTagResponse>>> getHomeProducts(
@@ -179,7 +180,7 @@ public class ProductController {
     public ResponseEntity<ApiResponse<PagedResponse<ProductTagResponse>>> getAllByShopId(
             @PathVariable String shopId,
             @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size){
+            @RequestParam(defaultValue = "10") int size) {
         Page<ProductTagResponse> pagedProducts = productService.getAllByShopId(shopId, page, size);
         PagedResponse<ProductTagResponse> pagedResponseProducts = PagedResponse.<ProductTagResponse>builder()
                 .totalPages(pagedProducts.getTotalPages())
@@ -191,6 +192,20 @@ public class ProductController {
                 .code("product-s-11")
                 .message("Get home products successfully")
                 .data(pagedResponseProducts)
+                .build();
+        return ResponseEntity.status(HttpStatus.OK).body(apiResponse);
+    }
+
+    @PreAuthorize("hasRole('SHOP')")
+    @PutMapping("/sku/{skuId}/stock")
+    public ResponseEntity<ApiResponse<Void>> getAllByShopId(
+            @PathVariable String skuId,
+            @RequestBody @Valid ProductUpdateSKUStock request
+    ) {
+        productService.updateSkuStock(skuId, request.getQuantity());
+        ApiResponse<Void> apiResponse = ApiResponse.<Void>builder()
+                .code("sku-s-01")
+                .message("Update sku stock successfully")
                 .build();
         return ResponseEntity.status(HttpStatus.OK).body(apiResponse);
     }

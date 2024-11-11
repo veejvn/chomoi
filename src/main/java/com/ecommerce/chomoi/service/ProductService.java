@@ -39,6 +39,8 @@ public class ProductService {
     ProductMapper productMapper;
     SecurityUtil securityUtil;
     UploadService uploadService;
+    EmailService emailService;
+    SKURepository skuRepository;
 
     @Transactional
     public ProductForShopResponse addProduct(ProductAddRequest productAddRequest) {
@@ -311,6 +313,11 @@ public class ProductService {
             default:
                 throw new AppException(HttpStatus.BAD_REQUEST, "Invalid product status", "product-e-07");
         }
+        emailService.sendEmailToNotifyProductStatusChange(
+                product.getShop().getAccount().getEmail(),
+                "src/main/resources/HTMLTemplates/email_template_notifi_to_shop_product_status.html",
+                product
+        );
 
         productRepository.save(product);
     }
@@ -328,7 +335,7 @@ public class ProductService {
         return productMapper.toProductResponse(product);
     }
 
-    public Page<ProductTagResponse> getAllByShopId(String idShop, int page, int size){
+    public Page<ProductTagResponse> getAllByShopId(String idShop, int page, int size) {
         Pageable pageable = PageRequest.of(page, size, Sort.by("rating").descending());
         Page<Product> productPage = productRepository.findByShopId(idShop, pageable);
         return productMapper.toPageProductTagResponse(productPage);
@@ -353,4 +360,13 @@ public class ProductService {
         return productMapper.toPageProductTagResponse(productPage);
     }
 
+    public void updateSkuStock(String skuId, Integer quantity) {
+        SKU sku = skuRepository.findById(skuId).orElseThrow();
+        int newStock = sku.getStock() + quantity;
+        if (newStock < 0) {
+            throw new AppException(HttpStatus.BAD_REQUEST, "SKU stock cannot smaller than 0", "sku-e--2");
+        }
+        sku.setStock(newStock);
+        skuRepository.save(sku);
+    }
 }
